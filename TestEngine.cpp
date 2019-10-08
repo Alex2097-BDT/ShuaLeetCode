@@ -19,47 +19,84 @@ TestEngine& TestEngine::instance() {
     return _test_engine;
 }
 
+/////////////////////////////////////////////////////////////////////
+/**
+ * add functions and structs def here
+ */
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+/////////////////////////////////////////////////////////////////////
+
 
 /**
  * paste Solution here
  */
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        int i=0,j=nums.size()-1;
-        int *a = new int[j+1];
-        for(int k=0;k<=j;k++){
-            a[k] = nums[k];
-        }
-        sort(nums.begin(),nums.end());
-        vector<int> ret;
-        bool found=false;
-        do{
-            if(i>=j) break;
-            if(nums[i]+nums[j]>target){
-                j--;
-            }else if(nums[i]+nums[j]<target){
-                i++;
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        int i;
+        int c;
+        ListNode *h1 = new ListNode(-1);
+        ListNode *h2 = new ListNode(-1);
+        ListNode *pt, *pt2;
+        h1->next = l1;
+        h2->next = l2;
+        int num;
+        pt = h1;
+        pt2 = h2;
+        c=0;
+        bool flag=false;
+        while(pt->next!=NULL||pt2->next!=NULL){
+            if(pt->next==NULL){
+                flag=false;
+                pt2=pt2->next;
+                pt2->val+=c;
+                if(pt2->val>=10){
+                    pt2->val-=10;
+                    c=1;
+                }else{
+                    c=0;
+                }
+            }else if(pt2->next==NULL){
+                flag=true;
+                pt = pt->next;
+                pt->val+=c;
+                if(pt->val>=10){
+                    pt->val-=10;
+                    c=1;
+                }else{
+                    c=0;
+                }
+                continue;
             }else{
-                found = true;
-                int m,n;
-                for(int k=0;k<nums.size();k++){
-                    if(a[k]==nums[i]){
-                        m=k;
-                        break;
-                    }
+                flag=true;
+                pt = pt->next;
+                pt2 = pt2->next;
+                pt->val+=pt2->val+c;
+                pt2->val = pt->val;
+                if(pt->val>=10){
+                    pt->val-=10;
+                    pt2->val-=10;
+                    c=1;
+                }else{
+                    c=0;
                 }
-                for(int k=nums.size()-1;k>=0;k--){
-                    if(a[k]==nums[j]){
-                        n=k;
-                        break;
-                    }
-                }
-                ret.push_back(min(m,n));
-                ret.push_back(max(m,n));
             }
-        }while(!found);
-        return ret;
+        }
+        if(flag){
+            if(c==1){
+                pt->next = new ListNode(1);
+            }
+            return l1;
+        }else{
+            if(c==1){
+                pt2->next = new ListNode(1);
+            }
+            return l2;
+        }
     }
 };
 
@@ -69,10 +106,20 @@ public:
  */
 RC TestEngine::test(){
     Solution solution;
-    vector<int> input_1 = {20,6,3,10};
-    int input_2 = 13;
-    vector<int> output(solution.twoSum(input_1, input_2));
-    print_vector(output);
+    ListNode *l1 = new ListNode(1);
+    ListNode l11 = ListNode(8);
+    l1->next=&l11;
+    ListNode *l2 = new ListNode(0);
+    cout<<endl;
+    ListNode *output = solution.addTwoNumbers(l2, l1);
+    ListNode *pt;
+    pt = output;
+    do{
+        cout<<pt->val<<" ";
+        pt = pt->next;
+    }while(pt!=NULL);
+
+//    cout<<(output->next->val==NULL)<<endl;
     return SUCCESS;
 }
 
