@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <cstring>
 #include "TestEngine.h"
 using namespace std;
 
@@ -23,11 +24,7 @@ TestEngine& TestEngine::instance() {
 /**
  * add functions and structs def here
  */
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
+
 /////////////////////////////////////////////////////////////////////
 
 
@@ -36,67 +33,35 @@ struct ListNode {
  */
 class Solution {
 public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        int i;
-        int c;
-        ListNode *h1 = new ListNode(-1);
-        ListNode *h2 = new ListNode(-1);
-        ListNode *pt, *pt2;
-        h1->next = l1;
-        h2->next = l2;
-        int num;
-        pt = h1;
-        pt2 = h2;
-        c=0;
-        bool flag=false;
-        while(pt->next!=NULL||pt2->next!=NULL){
-            if(pt->next==NULL){
-                flag=false;
-                pt2=pt2->next;
-                pt2->val+=c;
-                if(pt2->val>=10){
-                    pt2->val-=10;
-                    c=1;
-                }else{
-                    c=0;
-                }
-            }else if(pt2->next==NULL){
-                flag=true;
-                pt = pt->next;
-                pt->val+=c;
-                if(pt->val>=10){
-                    pt->val-=10;
-                    c=1;
-                }else{
-                    c=0;
-                }
-                continue;
+    //abpwbkew
+    bool not_repeat(string s, char c){
+        std::string::size_type n;
+        n = s.find(c);
+        if(n==std::string::npos){
+            return true;
+        }else return false;
+    }
+
+    int lengthOfLongestSubstring(string s) {
+        int max_len=1;
+        int len=strlen(s.c_str());
+        if(len==0){
+            return 0;
+        }
+        int p_start=0, p_end=1;
+        while(p_end<len){
+            if(not_repeat(s.substr(p_start, max_len), s[p_start+max_len])){
+                max_len+=1;
+                p_end+=1;
             }else{
-                flag=true;
-                pt = pt->next;
-                pt2 = pt2->next;
-                pt->val+=pt2->val+c;
-                pt2->val = pt->val;
-                if(pt->val>=10){
-                    pt->val-=10;
-                    pt2->val-=10;
-                    c=1;
-                }else{
-                    c=0;
-                }
+                do{
+                    p_start+=1;
+                    p_end+=1;
+                    if(not_repeat(s.substr(p_start, max_len), s[p_start+max_len])) break;
+                }while(p_end<len);
             }
         }
-        if(flag){
-            if(c==1){
-                pt->next = new ListNode(1);
-            }
-            return l1;
-        }else{
-            if(c==1){
-                pt2->next = new ListNode(1);
-            }
-            return l2;
-        }
+        return max_len;
     }
 };
 
@@ -106,20 +71,8 @@ public:
  */
 RC TestEngine::test(){
     Solution solution;
-    ListNode *l1 = new ListNode(1);
-    ListNode l11 = ListNode(8);
-    l1->next=&l11;
-    ListNode *l2 = new ListNode(0);
-    cout<<endl;
-    ListNode *output = solution.addTwoNumbers(l2, l1);
-    ListNode *pt;
-    pt = output;
-    do{
-        cout<<pt->val<<" ";
-        pt = pt->next;
-    }while(pt!=NULL);
-
-//    cout<<(output->next->val==NULL)<<endl;
+    string input = "pwwkew";
+    cout << solution.lengthOfLongestSubstring(input)<<endl;
     return SUCCESS;
 }
 
